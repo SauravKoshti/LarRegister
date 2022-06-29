@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Division;
 use Illuminate\Http\Request;
+use App\Models\Category;
 
-class DivisionController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,6 +15,8 @@ class DivisionController extends Controller
     public function index()
     {
         //
+        $categories = Category::latest()->paginate(10);
+        return view('Category.index',compact('categories'));
     }
 
     /**
@@ -25,6 +27,7 @@ class DivisionController extends Controller
     public function create()
     {
         //
+        return view('Category.create');
     }
 
     /**
@@ -36,6 +39,14 @@ class DivisionController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'name' => 'required',
+        ]);
+        $input = $request->all();
+        // dd($input);
+        Category::create($input);
+        return redirect()->route('category.index')
+                        ->with('success','Category insert successfully');
     }
 
     /**
@@ -58,8 +69,8 @@ class DivisionController extends Controller
     public function edit($id)
     {
         //
-        $division = Division::findOrFail($id);
-        return view('Divisions.edit',compact('division'));
+        $categories = Category::findOrFail($id);
+        return view('Category.edit',compact('categories'));
     }
 
     /**
@@ -80,9 +91,9 @@ class DivisionController extends Controller
             'name' => $request->name,
         ];
         // dd($input);
-        Division::whereId($id)->update($data);
-        return redirect()->route('divisions.index')
-                        ->with('success','Division Updated successfully');
+        Category::whereId($id)->update($data);
+        return redirect()->route('category.index')
+                        ->with('success','Category insert successfully');
     }
 
     /**
@@ -94,8 +105,8 @@ class DivisionController extends Controller
     public function destroy($id)
     {
         //
-        $division = Division::find($id);
-        $division->delete();
-        return redirect('divisions')->with('success', 'Division Successfully deleted!');
+        $categories = Category::find($id);
+        $categories->delete();
+        return redirect('category')->with('success', 'Category Successfully deleted!');
     }
 }
